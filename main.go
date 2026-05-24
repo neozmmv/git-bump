@@ -43,6 +43,11 @@ func registerNewTag(newTag string) error {
 	return cmd.Run()
 }
 
+func pushTag(newTag string) error {
+	cmd := exec.Command("git", "push", "origin", newTag)
+	return cmd.Run()
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: git bump <major|minor|patch>")
@@ -54,13 +59,21 @@ func main() {
 		return
 	}
 	latestTag, err := getLatestTag()
-	if err != nil {
-		fmt.Println("Error:", err)
-		fmt.Println("No tags found. Please create an initial tag before bumping.")
-		return
+	if err != nil && strings.Contains(err.Error(), "128") {
+		fmt.Println("No tags found. Creating initial tag v1.0.0.")
+		newTag := "v1.0.0"
+		_ = registerNewTag(newTag)
+		_ = pushTag(newTag)
+		os.Exit(0)
 	}
+
 	newTag := bumpVersion(latestTag, argument)
 	err = registerNewTag(newTag)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	err = pushTag(newTag)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
