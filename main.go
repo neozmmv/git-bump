@@ -60,13 +60,13 @@ func pushTag(newTag string) error {
 
 func manualBump() (string, error) {
 	var newTag string
-	currentTag, err := getLatestTag()
+	latestTag, err := getLatestTag()
 	if err != nil {
 		fmt.Println("Error fetching latest tag:", err)
 		return "", err
 	}
 
-	fmt.Println("Current Tag:", currentTag)
+	fmt.Println("Latest Tag:", latestTag)
 	fmt.Printf("Enter new tag: ")
 	fmt.Scanln(&newTag)
 
@@ -77,12 +77,12 @@ func manualBump() (string, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: git bump <major|minor|patch|manual|version|current>")
+		fmt.Println("Usage: git bump <major|minor|patch|manual|version|latest>")
 		return
 	}
 	argument := os.Args[1]
-	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" && argument != "version" && argument != "current" {
-		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', 'version', or 'current'.")
+	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" && argument != "version" && argument != "latest" {
+		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', 'version', or 'latest'.")
 		return
 	}
 
@@ -126,13 +126,13 @@ func main() {
 		}
 		fmt.Println("New Tag:", newTag)
 	} else if argument == "version" {
-		fmt.Println("Current Version:", Version)
-	} else if argument == "current" {
+		fmt.Printf("git bump %v\n", Version)
+	} else if argument == "latest" {
 		latestTag, err := getLatestTag()
 		if err != nil {
 			fmt.Println("Error fetching latest tag:", err)
 			return
 		}
-		fmt.Println("Current Tag:", latestTag)
+		fmt.Println("Latest Tag:", latestTag)
 	}
 }
