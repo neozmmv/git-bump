@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var version = "dev"
+var Version = "dev"
 
 func getLatestTag() (string, error) {
 	tag, err := exec.Command("git", "describe", "--tags", "--abbrev=0").Output()
@@ -118,7 +118,7 @@ func main() {
 		}
 		fmt.Println("New Tag:", newTag)
 	} else if argument == "version" {
-		fmt.Println("Current Version:", version)
+		fmt.Println("Current Version:", Version)
 	} else if argument == "current" {
 		latestTag, err := getLatestTag()
 		if err != nil {
