@@ -69,7 +69,7 @@ func manualBump() (string, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: git bump <major|minor|patch|manual>")
+		fmt.Println("Usage: git bump <major|minor|patch|manual|version|current>")
 		return
 	}
 	argument := os.Args[1]
@@ -77,16 +77,16 @@ func main() {
 		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', 'version', or 'current'.")
 		return
 	}
-	latestTag, err := getLatestTag()
-	if err != nil && strings.Contains(err.Error(), "128") {
-		fmt.Println("No tags found. Creating initial tag v1.0.0.")
-		newTag := "v1.0.0"
-		_ = registerNewTag(newTag)
-		_ = pushTag(newTag)
-		os.Exit(0)
-	}
 
 	if argument == "major" || argument == "minor" || argument == "patch" {
+		latestTag, err := getLatestTag()
+		if err != nil && strings.Contains(err.Error(), "128") {
+			fmt.Println("No tags found. Creating initial tag v1.0.0.")
+			newTag := "v1.0.0"
+			_ = registerNewTag(newTag)
+			_ = pushTag(newTag)
+			os.Exit(0)
+		}
 		newTag := bumpVersion(latestTag, argument)
 		err = registerNewTag(newTag)
 		if err != nil {
@@ -120,6 +120,11 @@ func main() {
 	} else if argument == "version" {
 		fmt.Println("Current Version:", version)
 	} else if argument == "current" {
+		latestTag, err := getLatestTag()
+		if err != nil {
+			fmt.Println("Error fetching latest tag:", err)
+			return
+		}
 		fmt.Println("Current Tag:", latestTag)
 	}
 }
