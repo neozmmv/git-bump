@@ -73,8 +73,8 @@ func main() {
 		return
 	}
 	argument := os.Args[1]
-	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" && argument != "version" {
-		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', or 'version'.")
+	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" && argument != "version" && argument != "current" {
+		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', 'version', or 'current'.")
 		return
 	}
 	latestTag, err := getLatestTag()
@@ -119,5 +119,7 @@ func main() {
 		fmt.Println("New Tag:", newTag)
 	} else if argument == "version" {
 		fmt.Println("Current Version:", version)
+	} else if argument == "current" {
+		fmt.Println("Current Tag:", latestTag)
 	}
 }
