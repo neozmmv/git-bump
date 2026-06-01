@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var version = "dev"
+
 func getLatestTag() (string, error) {
 	tag, err := exec.Command("git", "describe", "--tags", "--abbrev=0").Output()
 	if err != nil {
@@ -71,8 +73,8 @@ func main() {
 		return
 	}
 	argument := os.Args[1]
-	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" {
-		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', or 'manual'.")
+	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" && argument != "version" {
+		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', 'manual', or 'version'.")
 		return
 	}
 	latestTag, err := getLatestTag()
@@ -115,5 +117,7 @@ func main() {
 			return
 		}
 		fmt.Println("New Tag:", newTag)
+	} else if argument == "version" {
+		fmt.Println("Current Version:", version)
 	}
 }
