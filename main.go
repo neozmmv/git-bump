@@ -48,14 +48,31 @@ func pushTag(newTag string) error {
 	return cmd.Run()
 }
 
+func manualBump() (string, error) {
+	var newTag string
+	currentTag, err := getLatestTag()
+	if err != nil {
+		fmt.Println("Error fetching latest tag:", err)
+		return "", err
+	}
+
+	fmt.Println("Current Tag:", currentTag)
+	fmt.Printf("Enter new tag: ")
+	fmt.Scanln(&newTag)
+
+	newTag = strings.TrimSpace(newTag)
+	newTag = strings.ReplaceAll(newTag, " ", "")
+	return newTag, nil
+}
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: git bump <major|minor|patch>")
+		fmt.Println("Usage: git bump <major|minor|patch|manual>")
 		return
 	}
 	argument := os.Args[1]
-	if argument != "major" && argument != "minor" && argument != "patch" {
-		fmt.Println("Invalid argument. Use 'major', 'minor', or 'patch'.")
+	if argument != "major" && argument != "minor" && argument != "patch" && argument != "manual" {
+		fmt.Println("Invalid argument. Use 'major', 'minor', 'patch', or 'manual'.")
 		return
 	}
 	latestTag, err := getLatestTag()
@@ -67,16 +84,36 @@ func main() {
 		os.Exit(0)
 	}
 
-	newTag := bumpVersion(latestTag, argument)
-	err = registerNewTag(newTag)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+	if argument == "major" || argument == "minor" || argument == "patch" {
+		newTag := bumpVersion(latestTag, argument)
+		err = registerNewTag(newTag)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		err = pushTag(newTag)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Println("New Tag:", newTag)
+
+	} else if argument == "manual" {
+		newTag, err := manualBump()
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		err = registerNewTag(newTag)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		err = pushTag(newTag)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Println("New Tag:", newTag)
 	}
-	err = pushTag(newTag)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Println("New Tag:", newTag)
 }
