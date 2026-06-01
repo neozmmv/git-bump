@@ -3,7 +3,7 @@ git-bump is a simple extension for git that mimics the usage of `npm version` fo
 
 ## Usage
 ```bash
-git bump <major|minor|patch>
+git bump <major|minor|patch|manual|version|latest>
 ```
 
 If no tags are found, `v1.0.0` is created automatically.
