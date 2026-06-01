@@ -4,11 +4,19 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime/debug"
 	"strconv"
 	"strings"
 )
 
-var Version = "dev"
+func getVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" {
+		return info.Main.Version
+	}
+	return "dev"
+}
+
+var Version = getVersion()
 
 func getLatestTag() (string, error) {
 	tag, err := exec.Command("git", "describe", "--tags", "--abbrev=0").Output()
