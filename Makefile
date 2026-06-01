@@ -19,6 +19,7 @@ build-linux:
 
 build:
 	@echo "Building for all platforms..."
-	$(MAKE) build-win
-	$(MAKE) build-linux
+	GOOS=windows GOARCH=amd64 go build -ldflags "-X 'main.version=$(VERSION)'" -o $(BINARY).exe .
+	GOOS=linux GOARCH=amd64 go build -ldflags "-X 'main.version=$(VERSION)'" -o $(BINARY)-linux-amd64 .
+	GOOS=linux GOARCH=arm64 go build -ldflags "-X 'main.version=$(VERSION)'" -o $(BINARY)-linux-arm64 .
 	@echo "All builds complete."
